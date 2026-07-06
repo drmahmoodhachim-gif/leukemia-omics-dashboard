@@ -6,6 +6,7 @@
 import { readFileSync } from "fs";
 import path from "path";
 import { loadEnvFiles } from "../src/lib/ingest/load-env";
+import { getSupabaseSchema } from "../src/lib/supabase/client";
 
 loadEnvFiles();
 
@@ -82,6 +83,7 @@ function dsPayload(batch: Ds[]) {
 }
 
 async function rpc(name: string, payload: unknown) {
+  const schema = getSupabaseSchema();
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
@@ -92,8 +94,8 @@ async function rpc(name: string, payload: unknown) {
       apikey: key,
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "Accept-Profile": "sperm_omics",
-      "Content-Profile": "sperm_omics",
+      "Accept-Profile": schema,
+      "Content-Profile": schema,
     },
     body: JSON.stringify(
       name === "bulk_upsert_publications" || name === "bulk_upsert_datasets"
@@ -149,13 +151,14 @@ async function main() {
     schedule: manifest.schedule ?? "0 3 * * 0",
   });
 
+  const schema = getSupabaseSchema();
   const stats = await fetch(
     `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/dashboard_stats`,
     {
       headers: {
         apikey: key,
         Authorization: `Bearer ${key}`,
-        "Accept-Profile": "sperm_omics",
+        "Accept-Profile": schema,
       },
     }
   );

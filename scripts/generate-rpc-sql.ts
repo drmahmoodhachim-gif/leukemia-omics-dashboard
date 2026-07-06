@@ -1,6 +1,10 @@
 /** Generate RPC SQL chunks for MCP execute_sql */
 import { readFileSync, mkdirSync, writeFileSync } from "fs";
 import path from "path";
+import { loadEnvFiles } from "../src/lib/ingest/load-env";
+
+loadEnvFiles();
+const SCHEMA = process.env.NEXT_PUBLIC_SUPABASE_SCHEMA ?? "leukemia_omics";
 
 const CHUNK = 30;
 const merged = JSON.parse(
@@ -35,7 +39,7 @@ const pubRows = merged.publications.map((p: Record<string, unknown>) => ({
 }));
 
 chunk(pubRows, CHUNK).forEach((batch, i) => {
-  const sql = `SELECT sperm_omics.bulk_upsert_publications('${escJson(batch)}'::jsonb);`;
+  const sql = `SELECT ${SCHEMA}.bulk_upsert_publications('${escJson(batch)}'::jsonb);`;
   writeFileSync(path.join(outDir, `pubs-${String(i).padStart(2, "0")}.sql`), sql);
 });
 
@@ -56,12 +60,12 @@ const dsRows = merged.datasets.map((d: Record<string, unknown>) => ({
 }));
 
 chunk(dsRows, CHUNK).forEach((batch, i) => {
-  const sql = `SELECT sperm_omics.bulk_upsert_datasets('${escJson(batch)}'::jsonb);`;
+  const sql = `SELECT ${SCHEMA}.bulk_upsert_datasets('${escJson(batch)}'::jsonb);`;
   writeFileSync(path.join(outDir, `datasets-${String(i).padStart(2, "0")}.sql`), sql);
 });
 
 const m = JSON.parse(readFileSync(path.join(process.cwd(), "data/ingest-manifest.json"), "utf-8"));
-const manifestSql = `SELECT sperm_omics.upsert_ingest_manifest(
+const manifestSql = `SELECT ${SCHEMA}.upsert_ingest_manifest(
   '${m.lastRun}'::timestamptz,
   ${m.duration_ms},
   '${escJson(m.counts)}'::jsonb,
@@ -71,5 +75,5 @@ const manifestSql = `SELECT sperm_omics.upsert_ingest_manifest(
 writeFileSync(path.join(outDir, "manifest.sql"), manifestSql);
 
 console.log(
-  `Generated ${Math.ceil(pubRows.length / CHUNK)} pub + ${Math.ceil(dsRows.length / CHUNK)} dataset RPC batches`
+  `Generated ${Math.ceil(pubRows.length / CHUNK)} pub + ${Math.ceil(dsRows.length / CHUNK)} dataset RPC batches (schema: ${SCHEMA})`
 );

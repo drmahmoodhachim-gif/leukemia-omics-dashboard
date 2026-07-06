@@ -1,11 +1,15 @@
 /**
- * Generates batched SQL files for sperm_omics sync.
+ * Generates batched SQL files for leukemia_omics Supabase sync.
  * Run: npx tsx scripts/generate-bulk-sql.ts
  * Then execute via Supabase SQL or MCP execute_sql.
  */
 import { mkdirSync, writeFileSync } from "fs";
 import { readFileSync } from "fs";
 import path from "path";
+import { loadEnvFiles } from "../src/lib/ingest/load-env";
+
+loadEnvFiles();
+const SCHEMA = process.env.NEXT_PUBLIC_SUPABASE_SCHEMA ?? "leukemia_omics";
 
 interface Publication {
   id: string;
@@ -73,7 +77,7 @@ chunk(merged.publications, BATCH).forEach((batch, i) => {
     )
     .join(",\n");
 
-  const sql = `INSERT INTO sperm_omics.publications (external_id, pmid, doi, title, authors, journal, year, abstract, keywords, url, citation_count)
+  const sql = `INSERT INTO ${SCHEMA}.publications (external_id, pmid, doi, title, authors, journal, year, abstract, keywords, url, citation_count)
 VALUES
 ${values}
 ON CONFLICT (external_id) DO UPDATE SET
@@ -95,13 +99,13 @@ chunk(merged.datasets, BATCH).forEach((batch, i) => {
   const values = batch
     .map((d) => {
       const pubId = d.publicationId
-        ? `(SELECT id FROM sperm_omics.publications WHERE external_id = ${esc(d.publicationId)} LIMIT 1)`
+        ? `(SELECT id FROM ${SCHEMA}.publications WHERE external_id = ${esc(d.publicationId)} LIMIT 1)`
         : "NULL";
-      return `(${esc(d.id)}, ${pubId}, ${esc(d.accession)}, ${esc(d.repository)}, ${esc(d.title)}, ${esc(d.omicsType)}::sperm_omics.omics_type, ${esc(d.species)}::sperm_omics.species, ${esc(d.tissue)}::sperm_omics.tissue, ${d.sampleCount ?? "NULL"}, ${esc(d.platform ?? null)}, ${esc(d.phenotype ?? null)}, ${esc(d.summary ?? null)}, ${esc(d.url ?? null)})`;
+      return `(${esc(d.id)}, ${pubId}, ${esc(d.accession)}, ${esc(d.repository)}, ${esc(d.title)}, ${esc(d.omicsType)}::${SCHEMA}.omics_type, ${esc(d.species)}::${SCHEMA}.species, ${esc(d.tissue)}::${SCHEMA}.tissue, ${d.sampleCount ?? "NULL"}, ${esc(d.platform ?? null)}, ${esc(d.phenotype ?? null)}, ${esc(d.summary ?? null)}, ${esc(d.url ?? null)})`;
     })
     .join(",\n");
 
-  const sql = `INSERT INTO sperm_omics.datasets (external_id, publication_id, accession, repository, title, omics_type, species, tissue, sample_count, platform, phenotype, summary, url)
+  const sql = `INSERT INTO ${SCHEMA}.datasets (external_id, publication_id, accession, repository, title, omics_type, species, tissue, sample_count, platform, phenotype, summary, url)
 VALUES
 ${values}
 ON CONFLICT (external_id) DO UPDATE SET
@@ -124,7 +128,7 @@ ON CONFLICT (external_id) DO UPDATE SET
 const manifest = JSON.parse(
   readFileSync(path.join(process.cwd(), "data/ingest-manifest.json"), "utf-8")
 );
-const manifestSql = `INSERT INTO sperm_omics.ingest_manifest (id, last_run, duration_ms, counts, errors, schedule, updated_at)
+const manifestSql = `INSERT INTO ${SCHEMA}.ingest_manifest (id, last_run, duration_ms, counts, errors, schedule, updated_at)
 VALUES (1, ${esc(manifest.lastRun)}, ${manifest.duration_ms}, ${esc(JSON.stringify(manifest.counts))}::jsonb, ${esc(JSON.stringify(manifest.errors))}::jsonb, ${esc(manifest.schedule ?? "0 3 * * 0")}, now())
 ON CONFLICT (id) DO UPDATE SET
   last_run = EXCLUDED.last_run,

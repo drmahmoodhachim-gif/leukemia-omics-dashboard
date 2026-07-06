@@ -94,19 +94,19 @@ export default async function IngestPage() {
               name="NCBI GEO"
               description="RNA-seq, microarray, methylation, scRNA-seq via E-utilities"
               schedule="Weekly"
-              endpoint="scripts/lib/geo-ingest.ts"
+              endpoint="src/lib/ingest/geo-ingest.ts"
             />
             <SourceRow
               name="PRIDE Archive"
               description="Mass spectrometry proteomics via REST API v3"
               schedule="Weekly"
-              endpoint="scripts/lib/pride-ingest.ts"
+              endpoint="src/lib/ingest/pride-ingest.ts"
             />
             <SourceRow
               name="PubMed"
               description="Systematic literature indexing via E-utilities"
               schedule="Weekly"
-              endpoint="scripts/lib/pubmed-ingest.ts"
+              endpoint="src/lib/ingest/pubmed-ingest.ts"
             />
             <SourceRow
               name="Microbiota (SRA/GEO)"

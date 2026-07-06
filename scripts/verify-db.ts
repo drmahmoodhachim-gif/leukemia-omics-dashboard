@@ -13,8 +13,8 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`SpermOmics DB verification`);
-  console.log(`Schema: ${schema} (isolated from other projects)\n`);
+  console.log(`LeukemiaOmics DB verification`);
+  console.log(`Schema: ${schema} (isolated from SpermOmics and other projects)\n`);
 
   const [pubs, datasets, manifest] = await Promise.all([
     sb.from(TABLES.publications).select("*", { count: "exact", head: true }),
@@ -24,7 +24,7 @@ async function main() {
 
   if (pubs.error) {
     console.error("Publications table error:", pubs.error.message);
-    console.error("\nDid you run supabase/migrations/001_sperm_omics_standalone.sql ?");
+    console.error("\nDid you run supabase/migrations/001_leukemia_omics_standalone.sql ?");
     process.exit(1);
   }
 
