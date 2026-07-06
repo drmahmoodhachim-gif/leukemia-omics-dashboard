@@ -1,16 +1,29 @@
-import { AlertCircle, Download, Terminal } from "lucide-react";
+import { AlertCircle, BarChart3, Download, Terminal } from "lucide-react";
+import type { OmicsType } from "@/lib/types";
+
+const YEAR1_SCRNA_SCRIPT =
+  "https://github.com/drmahmoodhachim-gif/leukemia-omics-dashboard/blob/master/scripts/year1-prelim/03-scrna-immunogenicity.R";
 
 export function LocalOnlyGuidance({
   accession,
   reasons,
   repositoryUrl,
+  omicsType,
+  hasCatalogAnalysis = false,
   compact = false,
 }: {
   accession: string;
   reasons?: string[];
   repositoryUrl?: string;
+  omicsType?: OmicsType;
+  /** Published-findings tab has curated panels for this accession */
+  hasCatalogAnalysis?: boolean;
   compact?: boolean;
 }) {
+  const isSingleCell =
+    omicsType === "single_cell" ||
+    reasons?.some((r) => /seurat|single-cell|\.rds|h5ad/i.test(r));
+
   const geoUrl =
     repositoryUrl ??
     (accession.startsWith("GSE")
@@ -19,11 +32,16 @@ export function LocalOnlyGuidance({
 
   const bullets = reasons?.length
     ? reasons
-    : [
-        "RAW.tar only (raw FASTQ)",
-        "Excel / Seurat objects (.xlsx, single-cell)",
-        "BAM/FASTQ without processed counts",
-      ];
+    : isSingleCell
+      ? [
+          "Seurat RDS object (processed scRNA-seq counts + metadata)",
+          "Excel sample metadata — not a bulk expression matrix",
+        ]
+      : [
+          "RAW.tar only (raw FASTQ)",
+          "Excel / Seurat objects (.xlsx, single-cell)",
+          "BAM/FASTQ without processed counts",
+        ];
 
   return (
     <div
@@ -38,13 +56,37 @@ export function LocalOnlyGuidance({
         <div className="min-w-0 flex-1 space-y-3">
           <div>
             <h4 className="font-semibold text-amber-950">
-              This study cannot be analyzed in the browser
+              {isSingleCell
+                ? "Single-cell study — use Seurat locally"
+                : "This study cannot be analyzed in the browser"}
             </h4>
             <p className="mt-1 text-sm text-amber-900/90">
-              <span className="font-mono font-medium">{accession}</span> only provides file
-              formats that Netlify cannot parse for inline differential expression.
+              <span className="font-mono font-medium">{accession}</span>
+              {isSingleCell ? (
+                <>
+                  {" "}
+                  distributes a Seurat RDS and sample metadata, not a bulk count matrix. Netlify
+                  cannot run in-browser differential expression on single-cell objects.
+                </>
+              ) : (
+                <>
+                  {" "}
+                  only provides file formats that Netlify cannot parse for inline differential
+                  expression.
+                </>
+              )}
             </p>
           </div>
+
+          {hasCatalogAnalysis && (
+            <div className="rounded-lg border border-teal-200 bg-teal-50/80 px-3 py-2 text-sm text-teal-950">
+              <p className="flex items-start gap-2 font-medium">
+                <BarChart3 className="mt-0.5 h-4 w-4 shrink-0" />
+                You can still use <strong>Published findings</strong> for this accession — curated
+                gene panels and summary figures are available without downloading raw files.
+              </p>
+            </div>
+          )}
 
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
@@ -59,39 +101,60 @@ export function LocalOnlyGuidance({
 
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
-              For those, use
+              {isSingleCell ? "Recommended workflow" : "For those, use"}
             </p>
             <ul className="mt-2 space-y-2 text-sm text-amber-950/90">
               <li className="flex items-start gap-2">
                 <Download className="mt-0.5 h-4 w-4 shrink-0" />
                 <span>
-                  {geoUrl ? (
+                  Download the{" "}
+                  <strong>Seurat RDS</strong> and <strong>metadata .xlsx</strong> from the file
+                  list below
+                  {geoUrl && (
                     <>
+                      {" "}
+                      or{" "}
                       <a
                         href={geoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-medium text-primary underline-offset-2 hover:underline"
                       >
-                        Download from NCBI GEO
-                      </a>{" "}
-                      (or use the download links in the file list below)
+                        NCBI GEO
+                      </a>
                     </>
-                  ) : (
-                    "Download from the repository links in the file list below"
                   )}
                 </span>
               </li>
-              <li className="flex items-start gap-2">
-                <Terminal className="mt-0.5 h-4 w-4 shrink-0" />
-                <span>
-                  Local DESeq2: run{" "}
-                  <code className="rounded bg-amber-100/80 px-1.5 py-0.5 font-mono text-xs">
-                    npm run analyze:deseq2
-                  </code>{" "}
-                  with a count matrix and sample sheet after extracting files locally
-                </span>
-              </li>
+              {isSingleCell ? (
+                <li className="flex items-start gap-2">
+                  <Terminal className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    Local Seurat: adapt{" "}
+                    <a
+                      href={YEAR1_SCRNA_SCRIPT}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-primary underline-offset-2 hover:underline"
+                    >
+                      scripts/year1-prelim/03-scrna-immunogenicity.R
+                    </a>{" "}
+                    — load the RDS, annotate compartments, map FFAR / immunogenicity genes (Year-1
+                    Prelim Fig. 3)
+                  </span>
+                </li>
+              ) : (
+                <li className="flex items-start gap-2">
+                  <Terminal className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    Local DESeq2: run{" "}
+                    <code className="rounded bg-amber-100/80 px-1.5 py-0.5 font-mono text-xs">
+                      npm run analyze:deseq2
+                    </code>{" "}
+                    with a count matrix and sample sheet after extracting files locally
+                  </span>
+                </li>
+              )}
             </ul>
           </div>
         </div>

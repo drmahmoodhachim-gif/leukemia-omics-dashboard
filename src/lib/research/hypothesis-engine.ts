@@ -226,7 +226,7 @@ function buildFfarYear1FigurePlan(): FigurePlan[] {
       title: "Cold-to-hot scRNA immunogenicity",
       description:
         "Dot plot FFAR/AP/exhaustion genes by compartment; immunogenicity score diagnosis vs relapse (GSE289435). Script: scripts/year1-prelim/03-scrna-immunogenicity.R",
-      suggestedDataset: "GSE289435",
+      suggestedDataset: "GSE270894",
     },
     {
       panel: "Prelim Fig. 4",

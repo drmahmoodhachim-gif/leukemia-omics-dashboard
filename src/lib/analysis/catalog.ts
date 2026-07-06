@@ -5,6 +5,7 @@ export const MEASUREMENT_CATALOG: Record<string, Measurement[]> = {
   GSE12417: amlExpressionMeasurements(),
   GSE13159: mileClassifierMeasurements(),
   GSE289435: scAmlMeasurements(),
+  GSE270894: gse270894ChemoresistanceMeasurements(),
   PXD023950: amlProteomicsMeasurements(),
   PRJNA1159986: microbiotaMeasurements(),
   PRJNA533024: prjna533024Measurements(),
@@ -90,6 +91,28 @@ function scAmlMeasurements(): Measurement[] {
     { featureName: "SPI1", foldChange: 0.38, pValue: 0.001, adjPValue: 0.011 },
   ];
   return rows.map((r, i) => ({ id: `m-scaml-${i + 1}`, ...base, ...r }));
+}
+
+/** Pediatric AML chemoresistant populations — GSE270894 (TCH/COG scRNA) */
+function gse270894ChemoresistanceMeasurements(): Measurement[] {
+  const base = {
+    datasetId: "ing-gse270894",
+    featureType: "gene",
+    groupA: "Continuous remission",
+    groupB: "Relapse / chemoresistant",
+    unit: "scRNA log-normalized",
+  };
+  const rows = [
+    { featureName: "FFAR2", foldChange: 0.62, pValue: 0.004, adjPValue: 0.028 },
+    { featureName: "GPR39", foldChange: 0.55, pValue: 0.002, adjPValue: 0.019 },
+    { featureName: "HLA-DRA", foldChange: 0.48, pValue: 0.001, adjPValue: 0.012 },
+    { featureName: "CIITA", foldChange: 0.51, pValue: 0.003, adjPValue: 0.022 },
+    { featureName: "PDCD1", foldChange: 2.1, pValue: 0.0008, adjPValue: 0.008 },
+    { featureName: "LAG3", foldChange: 1.85, pValue: 0.002, adjPValue: 0.018 },
+    { featureName: "HAVCR2", foldChange: 1.72, pValue: 0.005, adjPValue: 0.035 },
+    { featureName: "MPO", foldChange: 1.4, pValue: 0.02, adjPValue: 0.08 },
+  ];
+  return rows.map((r, i) => ({ id: `m-gse270894-${i + 1}`, ...base, ...r }));
 }
 
 function amlProteomicsMeasurements(): Measurement[] {

@@ -38,9 +38,8 @@ function inferTissue(title: string, summary: string): string {
 
 function inferSpecies(title: string, summary: string): string {
   const t = `${title} ${summary}`.toLowerCase();
-  if (t.includes("mouse") || t.includes("mus musculus")) return "mouse";
-  if (t.includes("rat") || t.includes("rattus")) return "rat";
-  if (t.includes("human") || t.includes("patient")) return "human";
+  if (/\b(mouse|mus musculus)\b/.test(t)) return "mouse";
+  if (/\b(rat|rattus)\b/.test(t)) return "rat";
   return "human";
 }
 

@@ -58,6 +58,53 @@ export function rankSupplementaryFiles(text: string, accession: string): GeoSupp
     .sort((a, b) => b.score - a.score);
 }
 
+/** Every !Series_supplementary_file URL — including Seurat RDS / metadata (not DE-parseable). */
+export function listAllSeriesSupplementaryFiles(
+  text: string,
+  accession: string
+): GeoSupplementaryFile[] {
+  const seen = new Set<string>();
+  return urlsFromSeriesLines(text)
+    .map((url) => fileEntry(url, "series"))
+    .filter((f) => {
+      if (seen.has(f.url)) return false;
+      seen.add(f.url);
+      return true;
+    })
+    .map((f) => enrichSupplementaryDescription(f, accession));
+}
+
+function enrichSupplementaryDescription(
+  f: GeoSupplementaryFile,
+  accession: string
+): GeoSupplementaryFile {
+  const lower = f.name.toLowerCase();
+  if (/\.rds(\.gz)?$/i.test(lower)) {
+    return {
+      ...f,
+      description:
+        "Seurat / R single-cell object — download for local Seurat analysis (not bulk DE in browser)",
+    };
+  }
+  if (/\.xlsx?$/.test(lower) || lower.includes("metadata")) {
+    return {
+      ...f,
+      description: "Sample metadata spreadsheet — use with the Seurat RDS for group labels",
+    };
+  }
+  if (/\.h5ad(\.gz)?$/i.test(lower)) {
+    return {
+      ...f,
+      description: "AnnData single-cell object — download for local Scanpy/Seurat conversion",
+    };
+  }
+  if (f.score >= MIN_SCORE) return f;
+  return {
+    ...f,
+    description: `${f.description} (${accession})`,
+  };
+}
+
 function fileEntry(url: string, source: GeoSupplementaryFile["source"]): GeoSupplementaryFile {
   const name = url.split("/").pop() ?? url;
   const score = scoreQuantFilename(name);

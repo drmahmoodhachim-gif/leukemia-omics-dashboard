@@ -20,6 +20,7 @@ import { LocalOnlyGuidance } from "@/components/analysis/LocalOnlyGuidance";
 import { ResearchPlanNextStudy } from "@/components/analysis/ResearchPlanBanner";
 import { Badge } from "@/components/ui/Badge";
 import { isLocalOnlyError } from "@/lib/raw-data/local-only";
+import { hasAnalysisData } from "@/lib/analysis/catalog";
 import {
   buildAutoGroups,
   groupsFromAssignments,
@@ -138,13 +139,17 @@ export function RawDataAnalysis({
     localOnly || (analyzableFiles.length === 0 && !loadingFiles && files.length > 0);
   const showLocalOnlyFromError = isLocalOnlyError(error);
 
+  const rawApiBase = `/api/raw/${encodeURIComponent(accession)}${
+    study.omicsType ? `?omicsType=${encodeURIComponent(study.omicsType)}` : ""
+  }`;
+
   const loadFiles = useCallback(async () => {
     setLoadingFiles(true);
     setError(null);
     setLocalOnly(false);
     setLocalOnlyReasons([]);
     try {
-      const res = await fetch(`/api/raw/${encodeURIComponent(accession)}`);
+      const res = await fetch(rawApiBase);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to list files");
       setFiles(data.files ?? []);
@@ -163,7 +168,7 @@ export function RawDataAnalysis({
     } finally {
       setLoadingFiles(false);
     }
-  }, [accession]);
+  }, [accession, rawApiBase]);
 
   const loadMatrix = useCallback(async () => {
     setLoadingMatrix(true);
@@ -194,7 +199,7 @@ export function RawDataAnalysis({
     setError(null);
 
     try {
-      const filesRes = await fetch(`/api/raw/${encodeURIComponent(accession)}`);
+      const filesRes = await fetch(rawApiBase);
       const filesData = await filesRes.json();
       if (!filesRes.ok) throw new Error(filesData.error ?? "Failed to list files");
 
@@ -482,6 +487,8 @@ export function RawDataAnalysis({
           accession={accession}
           reasons={localOnlyReasons.length ? localOnlyReasons : undefined}
           repositoryUrl={repositoryUrl}
+          omicsType={study.omicsType}
+          hasCatalogAnalysis={hasAnalysisData(study)}
         />
       )}
 

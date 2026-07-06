@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # Analysis 3 — scRNA cold-to-hot / immunogenicity (Seurat)
 # Maps FFAR pathway + antigen presentation across blast, T, myeloid compartments
-# Default atlas: GSE289435 (pediatric AML scRNA — also in LeukemiaOmics workspace)
+# Default atlas: GSE270894 (TCH/COG pediatric AML chemoresistance scRNA) or GSE289435
 #
 # Output: data/year1-prelim/output/A3_scrna_immunogenicity.pdf
 
@@ -22,15 +22,14 @@ exh_genes <- cfg$immunogenicity$exhaustion
 feature_panel <- unique(c(ffar_genes, ap_genes, exh_genes))
 
 # --- Load Seurat object (download GSE289435 or build from 10x h5) ---
-seurat_rds <- "data/year1-prelim/gse289435/seurat_gse289435.rds"
+seurat_rds <- "data/year1-prelim/gse270894/GSE270894_TCH_and_COG_Pediatric_AML_scRNAseq_Data_AND_Annotation.RDS"
 if (!file.exists(seurat_rds)) {
   stop(
     "Build Seurat object first:\n",
-    "  1. GEOquery::getGEO('GSE289435') or download processed counts from GEO\n",
-    "  2. Standard QC → NormalizeData → FindVariableFeatures → ScaleData → PCA → UMAP\n",
-    "  3. Annotate cell types: Blast, T cell, Myeloid (M1/M2), HSC\n",
-    "  4. saveRDS(seu, '", seurat_rds, "')\n",
-    "See LeukemiaOmics Analysis Workspace: /analysis?accession=GSE289435"
+    "  1. Download GSE270894 Seurat RDS + metadata xlsx from GEO (see Analysis Workspace file list)\n",
+    "  2. readRDS() → standard QC if needed → annotate blast / T / myeloid compartments\n",
+    "  3. saveRDS(seu, '", seurat_rds, "') OR point seurat_rds at readRDS path\n",
+    "See LeukemiaOmics: Published findings tab OR /analysis?accession=GSE270894\n"
   )
 }
 

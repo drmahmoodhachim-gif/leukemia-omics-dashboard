@@ -7,6 +7,7 @@ import {
   discoverGeoQuantFiles,
   fetchGeoSupplementaryMatrix,
   listGeoSupplDirectory,
+  listAllSeriesSupplementaryFiles,
   rankSupplementaryFiles,
   seriesMatrixHasExpressionTable,
 } from "@/lib/raw-data/geo-supplementary";
@@ -118,8 +119,26 @@ export async function listRawFiles(accession: string): Promise<RawFileLink[]> {
         url: s.url,
         type: "processed",
         description: s.description,
-        analyzable: true,
+        analyzable: s.score >= 8,
       });
+    }
+
+    if (matrixText) {
+      const listed = new Set(files.map((f) => f.url));
+      for (const f of listAllSeriesSupplementaryFiles(matrixText, acc)) {
+        if (listed.has(f.url)) continue;
+        listed.add(f.url);
+        const lower = f.name.toLowerCase();
+        const isSeurat = /\.rds(\.gz)?$/i.test(lower);
+        const isSc = /\.h5ad(\.gz)?$/i.test(lower);
+        files.push({
+          name: f.name,
+          url: f.url,
+          type: isSeurat || isSc ? "processed" : "metadata",
+          description: f.description,
+          analyzable: false,
+        });
+      }
     }
 
     if (minimlUrl) {

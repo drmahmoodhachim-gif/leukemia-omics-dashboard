@@ -19,12 +19,13 @@ interface RawFileEntry {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ accession: string }> }
 ) {
   const { accession } = await params;
   const acc = decodeURIComponent(accession).toUpperCase();
   const kind = accessionKind(acc);
+  const omicsType = new URL(request.url).searchParams.get("omicsType") ?? undefined;
 
   let files: RawFileEntry[] = [];
   if (kind === "geo" && isGeoAccession(acc)) {
@@ -44,7 +45,11 @@ export async function GET(
     }));
   }
 
-  const availability = classifyRawFileAvailability(files, acc);
+  const availability = classifyRawFileAvailability(
+    files,
+    acc,
+    omicsType as import("@/lib/types").OmicsType | undefined
+  );
 
   return NextResponse.json({
     accession: acc,
