@@ -1,0 +1,15 @@
+{
+  "lastRun": "2026-07-06T09:38:45.590Z",
+  "duration_ms": 38005,
+  "counts": {
+    "geo": 165,
+    "pride": 2,
+    "pubmed": 310,
+    "microbiota": 21,
+    "resources": 12,
+    "total_datasets": 200,
+    "total_publications": 318
+  },
+  "errors": [],
+  "schedule": "0 3 * * 0"
+}
