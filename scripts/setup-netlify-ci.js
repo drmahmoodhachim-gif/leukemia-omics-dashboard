@@ -4,7 +4,7 @@
  */
 const { execSync } = require("child_process");
 
-const SITE_ID = process.env.NETLIFY_SITE_ID ?? "YOUR-NEW-NETLIFY-SITE-ID";
+const SITE_ID = process.env.NETLIFY_SITE_ID ?? "1c1bf12d-7e37-48bc-b930-968b80a7571b";
 
 function api(name, body) {
   const payload = JSON.stringify({ site_id: SITE_ID, ...body });

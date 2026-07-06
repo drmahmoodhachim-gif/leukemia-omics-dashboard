@@ -7,7 +7,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const SITE_ID = process.env.NETLIFY_SITE_ID ?? "YOUR-NEW-NETLIFY-SITE-ID";
+const SITE_ID = process.env.NETLIFY_SITE_ID ?? "1c1bf12d-7e37-48bc-b930-968b80a7571b";
 
 const configPath = path.join(
   os.homedir(),
