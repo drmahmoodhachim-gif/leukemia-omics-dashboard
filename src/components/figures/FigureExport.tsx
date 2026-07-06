@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FileImage, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ensureChartReady } from "@/lib/charts/ensure-chart-ready";
 
 interface FigureExportProps {
   figureId: string;
@@ -18,6 +19,8 @@ export function FigureExport({ figureId, figureTitle, className }: FigureExportP
     try {
       const container = document.getElementById(`figure-content-${figureId}`);
       if (!container) throw new Error("Figure container not found");
+
+      await ensureChartReady(container);
 
       const filename = figureTitle
         .replace(/[^a-z0-9]+/gi, "_")

@@ -76,7 +76,7 @@ export function extractGeneHints(text: string): string[] {
   const fromKnown = known.filter((g) => upper.includes(g));
   const tokenMatches = text.match(/\b[A-Z][A-Z0-9]{1,9}\d?\b/g) ?? [];
   const extra = tokenMatches.filter(
-    (t) => t.length >= 3 && !["RNA", "DNA", "WHO", "NOA", "OAT", "IVF", "IUI"].includes(t)
+    (t) => t.length >= 3 && !["RNA", "DNA", "WHO", "MRD", "CRS", "CAR", "HSC"].includes(t)
   );
   return [...new Set([...fromKnown, ...extra])].slice(0, 12);
 }

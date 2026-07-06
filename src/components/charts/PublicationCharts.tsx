@@ -5,7 +5,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  ResponsiveContainer,
   Scatter,
   ScatterChart,
   Tooltip,
@@ -13,6 +12,7 @@ import {
   YAxis,
   ReferenceLine,
 } from "recharts";
+import { ChartContainer } from "@/components/charts/ChartContainer";
 
 const COLORS = {
   up: "#ef4444",
@@ -21,6 +21,22 @@ const COLORS = {
   primary: "#0d9488",
   secondary: "#64748b",
 };
+
+const SCATTER_DOT_RADIUS = 5;
+
+type ScatterDotProps = {
+  cx?: number;
+  cy?: number;
+  fill?: string;
+};
+
+function ScatterDot(props: unknown) {
+  const { cx, cy, fill } = (props ?? {}) as ScatterDotProps;
+  if (typeof cx !== "number" || typeof cy !== "number" || !Number.isFinite(cx) || !Number.isFinite(cy)) {
+    return <g />;
+  }
+  return <circle cx={cx} cy={cy} r={SCATTER_DOT_RADIUS} fill={fill ?? COLORS.ns} />;
+}
 
 interface VolcanoPoint {
   name: string;
@@ -45,54 +61,56 @@ export function VolcanoPlot({ data }: { data: VolcanoPoint[] }) {
 
   return (
     <div role="img" aria-label={`Volcano plot of ${data.length} features`}>
-      <ResponsiveContainer width="100%" height={400}>
-      <ScatterChart margin={{ top: 20, right: 30, bottom: 40, left: 40 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis
-          type="number"
-          dataKey="log2FC"
-          name="log2 FC"
-          domain={[-3, 3]}
-          label={{ value: "log₂ Fold Change", position: "bottom", offset: 20, style: { fontSize: 12 } }}
-        />
-        <YAxis
-          type="number"
-          dataKey="negLog10P"
-          name="-log10(p)"
-          label={{ value: "-log₁₀(p-value)", angle: -90, position: "insideLeft", style: { fontSize: 12 } }}
-        />
-        <ReferenceLine x={-1} stroke="#cbd5e1" strokeDasharray="4 4" />
-        <ReferenceLine x={1} stroke="#cbd5e1" strokeDasharray="4 4" />
-        <ReferenceLine y={1.3} stroke="#cbd5e1" strokeDasharray="4 4" />
-        <Tooltip
-          content={({ payload }) => {
-            if (!payload?.[0]) return null;
-            const d = payload[0].payload as VolcanoPoint;
-            return (
-              <div className="rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
-                <p className="font-semibold">{d.name}</p>
-                <p>log₂FC: {d.log2FC.toFixed(2)}</p>
-                <p>-log₁₀(p): {d.negLog10P.toFixed(2)}</p>
-              </div>
-            );
-          }}
-        />
-        <Scatter data={data} fill="#8884d8">
-          {data.map((entry, i) => (
-            <Cell
-              key={i}
-              fill={
-                entry.significant
-                  ? entry.direction === "up"
-                    ? COLORS.up
-                    : COLORS.down
-                  : COLORS.ns
-              }
+      <ChartContainer height={400}>
+        {({ width, height }) => (
+          <ScatterChart width={width} height={height} margin={{ top: 20, right: 30, bottom: 40, left: 40 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis
+              type="number"
+              dataKey="log2FC"
+              name="log2 FC"
+              domain={[-3, 3]}
+              label={{ value: "log₂ Fold Change", position: "bottom", offset: 20, style: { fontSize: 12 } }}
             />
-          ))}
-        </Scatter>
-      </ScatterChart>
-    </ResponsiveContainer>
+            <YAxis
+              type="number"
+              dataKey="negLog10P"
+              name="-log10(p)"
+              label={{ value: "-log₁₀(p-value)", angle: -90, position: "insideLeft", style: { fontSize: 12 } }}
+            />
+            <ReferenceLine x={-1} stroke="#cbd5e1" strokeDasharray="4 4" />
+            <ReferenceLine x={1} stroke="#cbd5e1" strokeDasharray="4 4" />
+            <ReferenceLine y={1.3} stroke="#cbd5e1" strokeDasharray="4 4" />
+            <Tooltip
+              content={({ payload }) => {
+                if (!payload?.[0]) return null;
+                const d = payload[0].payload as VolcanoPoint;
+                return (
+                  <div className="rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
+                    <p className="font-semibold">{d.name}</p>
+                    <p>log₂FC: {d.log2FC.toFixed(2)}</p>
+                    <p>-log₁₀(p): {d.negLog10P.toFixed(2)}</p>
+                  </div>
+                );
+              }}
+            />
+            <Scatter data={data} isAnimationActive={false} shape={ScatterDot}>
+              {data.map((entry, i) => (
+                <Cell
+                  key={i}
+                  fill={
+                    entry.significant
+                      ? entry.direction === "up"
+                        ? COLORS.up
+                        : COLORS.down
+                      : COLORS.ns
+                  }
+                />
+              ))}
+            </Scatter>
+          </ScatterChart>
+        )}
+      </ChartContainer>
     </div>
   );
 }
@@ -115,31 +133,33 @@ export function OmicsBarChart({ data }: { data: BarCategory[] }) {
     );
   }
 
-  const label = `Bar chart comparing ${data.length} categories`;
+  const label = `Bar chart comparing ${data.length} omics modalities`;
 
   return (
     <div role="img" aria-label={label}>
-      <ResponsiveContainer width="100%" height={320}>
-      <BarChart data={data} margin={{ top: 10, right: 20, bottom: 60, left: 10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis
-          dataKey="name"
-          angle={-35}
-          textAnchor="end"
-          interval={0}
-          tick={{ fontSize: 11 }}
-        />
-        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-        <Tooltip
-          contentStyle={{
-            borderRadius: 8,
-            border: "1px solid #e2e8f0",
-            fontSize: 12,
-          }}
-        />
-        <Bar dataKey="count" fill={COLORS.primary} radius={[4, 4, 0, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
+      <ChartContainer height={320}>
+        {({ width, height }) => (
+          <BarChart width={width} height={height} data={data} margin={{ top: 10, right: 20, bottom: 60, left: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis
+              dataKey="name"
+              angle={-35}
+              textAnchor="end"
+              interval={0}
+              tick={{ fontSize: 11 }}
+            />
+            <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+            <Tooltip
+              contentStyle={{
+                borderRadius: 8,
+                border: "1px solid #e2e8f0",
+                fontSize: 12,
+              }}
+            />
+            <Bar dataKey="count" fill={COLORS.primary} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+          </BarChart>
+        )}
+      </ChartContainer>
     </div>
   );
 }
@@ -158,36 +178,35 @@ export function PathwayChart({ data }: { data: PathwayItem[] }) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={320}>
-      <BarChart
-        data={chartData}
-        layout="vertical"
-        margin={{ top: 5, right: 30, bottom: 5, left: 140 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
-        <XAxis type="number" tick={{ fontSize: 11 }} />
-        <YAxis
-          type="category"
-          dataKey="name"
-          width={130}
-          tick={{ fontSize: 11 }}
-        />
-        <Tooltip
-          content={({ payload }) => {
-            if (!payload?.[0]) return null;
-            const d = payload[0].payload as PathwayItem & { negLog10P: number };
-            return (
-              <div className="rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
-                <p className="font-semibold">{d.name}</p>
-                <p>Genes: {d.geneRatio}</p>
-                <p>p-value: {d.pValue.toExponential(1)}</p>
-              </div>
-            );
-          }}
-        />
-        <Bar dataKey="negLog10P" fill={COLORS.primary} radius={[0, 4, 4, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
+    <ChartContainer height={320}>
+      {({ width, height }) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={chartData}
+          layout="vertical"
+          margin={{ top: 5, right: 30, bottom: 5, left: 140 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
+          <XAxis type="number" tick={{ fontSize: 11 }} />
+          <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 11 }} />
+          <Tooltip
+            content={({ payload }) => {
+              if (!payload?.[0]) return null;
+              const d = payload[0].payload as PathwayItem & { negLog10P: number };
+              return (
+                <div className="rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
+                  <p className="font-semibold">{d.name}</p>
+                  <p>Genes: {d.geneRatio}</p>
+                  <p>p-value: {d.pValue.toExponential(1)}</p>
+                </div>
+              );
+            }}
+          />
+          <Bar dataKey="negLog10P" fill={COLORS.primary} radius={[0, 4, 4, 0]} isAnimationActive={false} />
+        </BarChart>
+      )}
+    </ChartContainer>
   );
 }
 
@@ -204,14 +223,15 @@ const GROUP_COLORS: Record<string, string> = {
   "NPM1-mut": "#8b5cf6",
   "Complex karyotype": "#f59e0b",
   Control: "#0d9488",
+  Healthy: "#0d9488",
   AML: "#ef4444",
   ALL: "#3b82f6",
+  CML: "#f97316",
+  MDS: "#a855f7",
   Remission: "#0d9488",
   Relapse: "#ef4444",
-  Fertile: "#0d9488",
-  Infertile: "#ef4444",
-  OAT: "#f59e0b",
-  iNOA: "#8b5cf6",
+  "Post-chemo": "#14b8a6",
+  Survivors: "#0d9488",
 };
 
 export function PCAPlot({ data, variance }: { data: PCAPoint[]; variance?: { pc1: number; pc2: number } }) {
@@ -233,48 +253,50 @@ export function PCAPlot({ data, variance }: { data: PCAPoint[]; variance?: { pc1
 
   return (
     <div role="img" aria-label={label}>
-      <ResponsiveContainer width="100%" height={400}>
-      <ScatterChart margin={{ top: 20, right: 30, bottom: 40, left: 40 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis
-          type="number"
-          dataKey="x"
-          label={{
-            value: variance ? `PC1 (${variance.pc1}% variance)` : "PC1",
-            position: "bottom",
-            offset: 20,
-            style: { fontSize: 12 },
-          }}
-        />
-        <YAxis
-          type="number"
-          dataKey="y"
-          label={{
-            value: variance ? `PC2 (${variance.pc2}% variance)` : "PC2",
-            angle: -90,
-            position: "insideLeft",
-            style: { fontSize: 12 },
-          }}
-        />
-        <Tooltip
-          content={({ payload }) => {
-            if (!payload?.[0]) return null;
-            const d = payload[0].payload as PCAPoint;
-            return (
-              <div className="rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
-                <p className="font-semibold">{d.sample}</p>
-                <p>Group: {d.group}</p>
-              </div>
-            );
-          }}
-        />
-        <Scatter data={data}>
-          {data.map((entry, i) => (
-            <Cell key={i} fill={GROUP_COLORS[entry.group] ?? COLORS.secondary} />
-          ))}
-        </Scatter>
-      </ScatterChart>
-    </ResponsiveContainer>
+      <ChartContainer height={400}>
+        {({ width, height }) => (
+          <ScatterChart width={width} height={height} margin={{ top: 20, right: 30, bottom: 40, left: 40 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis
+              type="number"
+              dataKey="x"
+              label={{
+                value: pc1Label,
+                position: "bottom",
+                offset: 20,
+                style: { fontSize: 12 },
+              }}
+            />
+            <YAxis
+              type="number"
+              dataKey="y"
+              label={{
+                value: pc2Label,
+                angle: -90,
+                position: "insideLeft",
+                style: { fontSize: 12 },
+              }}
+            />
+            <Tooltip
+              content={({ payload }) => {
+                if (!payload?.[0]) return null;
+                const d = payload[0].payload as PCAPoint;
+                return (
+                  <div className="rounded-lg border border-border bg-card p-3 text-sm shadow-lg">
+                    <p className="font-semibold">{d.sample}</p>
+                    <p>Group: {d.group}</p>
+                  </div>
+                );
+              }}
+            />
+            <Scatter data={data} isAnimationActive={false} shape={ScatterDot}>
+              {data.map((entry, i) => (
+                <Cell key={i} fill={GROUP_COLORS[entry.group] ?? COLORS.secondary} />
+              ))}
+            </Scatter>
+          </ScatterChart>
+        )}
+      </ChartContainer>
     </div>
   );
 }

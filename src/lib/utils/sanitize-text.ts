@@ -27,7 +27,7 @@ function decodeXmlEntities(s: string): string {
 }
 
 const ACCESSION_RE =
-  /\b(GSE\d+|PXD\d+|E-MTAB-\d+|SPERMD-\d+|SRP\d+|PRJNA\d+|SAMN\d+)\b/i;
+  /\b(GSE\d+|PXD\d+|E-MTAB-\d+|SRP\d+|PRJNA\d+|SAMN\d+)\b/i;
 
 /** Extract a repository accession ID from free text. */
 export function extractAccession(text: string): string | null {
