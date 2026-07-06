@@ -1,6 +1,11 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/Badge";
 import { methods } from "@/lib/data/seed";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Methods & Materials", PAGE_DESCRIPTIONS.methods, {
+  path: "/methods",
+});
 
 export default function MethodsPage() {
   const categories = [...new Set(methods.map((m) => m.category))];
@@ -12,7 +17,7 @@ export default function MethodsPage() {
           <h1 className="font-serif text-3xl font-bold">Methods &amp; Materials</h1>
           <p className="mt-2 text-muted-foreground">
             Standardized analysis protocols and materials used to process public
-            infertility omics data and generate publication-ready outputs.
+            leukemia omics data and generate publication-ready outputs.
           </p>
         </header>
 

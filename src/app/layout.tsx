@@ -8,7 +8,10 @@ const serif = Source_Serif_4({ subsets: ["latin"], variable: "--font-serif" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "LeukemiaOmics Resource Library",
+  title: {
+    template: "%s | LeukemiaOmics",
+    default: "LeukemiaOmics Resource Library",
+  },
   description:
     "Publication-ready figures, tables, methods, and curated public omics data for leukemia research — including microbiota, GEO, PRIDE, and reference atlases.",
   authors: [{ name: DEVELOPER.name, url: DEVELOPER.profileUrl }],

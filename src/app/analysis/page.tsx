@@ -2,6 +2,11 @@ import { Suspense } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { AnalysisWorkspace } from "@/components/analysis/AnalysisWorkspace";
 import { getAnalyzableStudies, getRawCapableStudies } from "@/lib/analysis/resolve-dataset";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Analysis Workspace", PAGE_DESCRIPTIONS.analysis, {
+  path: "/analysis",
+});
 
 export const dynamic = "force-dynamic";
 

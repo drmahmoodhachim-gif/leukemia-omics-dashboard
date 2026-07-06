@@ -56,7 +56,7 @@ function pubmedToPublication(r: PubMedRecord): Publication {
     journal: r.journal,
     year: r.year,
     abstract: r.abstract,
-    keywords: r.doi ? undefined : ["male infertility", "omics"],
+    keywords: r.doi ? undefined : ["leukemia", "omics"],
     url: r.url,
   };
 }

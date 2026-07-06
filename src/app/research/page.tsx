@@ -1,5 +1,10 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ResearchExplorer } from "@/components/research/ResearchExplorer";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Research Planner", PAGE_DESCRIPTIONS.research, {
+  path: "/research",
+});
 
 export const dynamic = "force-dynamic";
 

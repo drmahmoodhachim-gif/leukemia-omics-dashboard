@@ -3,6 +3,11 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { PublicationSearch } from "@/components/publications/PublicationSearch";
 import { PublicationsList, PublicationsPageNav } from "@/components/publications/PublicationsList";
 import { getPublicationsPage } from "@/lib/data/library";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Publications", PAGE_DESCRIPTIONS.publications, {
+  path: "/publications",
+});
 
 export const dynamic = "force-dynamic";
 

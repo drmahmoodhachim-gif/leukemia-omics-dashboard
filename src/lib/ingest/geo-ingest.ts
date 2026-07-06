@@ -14,9 +14,15 @@ const QUERIES = [
 
 function inferOmics(title: string, summary: string): string {
   const t = `${title} ${summary}`.toLowerCase();
+  if (/\[(?:rna-seq|rna seq|scrna-seq|scrna seq)\]/i.test(title)) return "transcriptomics";
+  if (/\[(?:chip-seq|chip seq|atac-seq|atac seq|cut&run|cut&tag|wgbs|bisulfite)\]/i.test(title))
+    return "epigenomics";
   if (t.includes("microbi") || t.includes("16s") || t.includes("metagenom")) return "microbiota";
   if (t.includes("single cell") || t.includes("single-cell") || t.includes("scrna"))
     return "single_cell";
+  if (/\b(chip-seq|chip seq|atac-seq|atac seq|cut&run|cut&tag|bisulfite|methyl)\b/.test(t))
+    return "epigenomics";
+  if (/\b(rna-seq|rna seq|transcriptom|mrna-seq)\b/.test(t)) return "transcriptomics";
   if (t.includes("proteom") || t.includes("mass spectrom")) return "proteomics";
   if (t.includes("methyl") || t.includes("epigen")) return "epigenomics";
   if (t.includes("metabolom")) return "metabolomics";

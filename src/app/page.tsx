@@ -13,6 +13,9 @@ import { StatCard } from "@/components/ui/StatCard";
 import { Badge } from "@/components/ui/Badge";
 import { OmicsBarChart } from "@/components/charts/PublicationCharts";
 import { getDashboardStatsAsync, getIngestManifest, getPublicationsPage } from "@/lib/data/library";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Overview", PAGE_DESCRIPTIONS.overview, { path: "/" });
 import { figures } from "@/lib/data/seed";
 import { OMICS_LABELS, TISSUE_LABELS } from "@/lib/utils";
 

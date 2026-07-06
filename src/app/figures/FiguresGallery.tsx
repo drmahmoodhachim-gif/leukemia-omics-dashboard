@@ -3,8 +3,8 @@
 import { FigureRenderer } from "@/components/figures/FigureRenderer";
 import { FigureExport } from "@/components/figures/FigureExport";
 import { Badge } from "@/components/ui/Badge";
+import { getHydratedFigures } from "@/lib/data/hydrate-figures";
 import {
-  figures,
   getDatasetById,
   getMethodById,
   getPublicationById,
@@ -12,9 +12,11 @@ import {
 import { FIGURE_LABELS } from "@/lib/utils";
 
 export function FiguresGallery() {
+  const galleryFigures = getHydratedFigures();
+
   return (
     <div className="space-y-8">
-      {figures.map((fig) => {
+      {galleryFigures.map((fig) => {
         const pub = fig.publicationId
           ? getPublicationById(fig.publicationId)
           : undefined;
@@ -25,7 +27,7 @@ export function FiguresGallery() {
           <article
             key={fig.id}
             id={fig.id}
-            className="rounded-xl border border-border bg-card shadow-sm"
+            className="scroll-mt-24 rounded-xl border border-border bg-card shadow-sm"
           >
             <div className="border-b border-border px-6 py-4">
               <div className="flex flex-wrap items-center justify-between gap-3">

@@ -117,8 +117,8 @@ export function RawDataAnalysis({
   const [selectedFileUrl, setSelectedFileUrl] = useState<string>("");
   const [matrix, setMatrix] = useState<MatrixPreview | null>(null);
   const [assignments, setAssignments] = useState<Record<string, SampleGroup>>({});
-  const [groupALabel, setGroupALabel] = useState("Control / Fertile");
-  const [groupBLabel, setGroupBLabel] = useState("Case / Infertile");
+  const [groupALabel, setGroupALabel] = useState("Control / Remission");
+  const [groupBLabel, setGroupBLabel] = useState("Case / Leukemia");
   const [loadingFiles, setLoadingFiles] = useState(false);
   const [loadingMatrix, setLoadingMatrix] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);

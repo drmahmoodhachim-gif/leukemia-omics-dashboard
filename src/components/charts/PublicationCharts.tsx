@@ -31,8 +31,21 @@ interface VolcanoPoint {
 }
 
 export function VolcanoPlot({ data }: { data: VolcanoPoint[] }) {
+  if (!data.length) {
+    return (
+      <div
+        role="img"
+        aria-label="Volcano plot — no differential expression data loaded"
+        className="flex h-[400px] items-center justify-center rounded-lg bg-muted/40 text-sm text-muted-foreground"
+      >
+        No volcano plot data available for this figure.
+      </div>
+    );
+  }
+
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <div role="img" aria-label={`Volcano plot of ${data.length} features`}>
+      <ResponsiveContainer width="100%" height={400}>
       <ScatterChart margin={{ top: 20, right: 30, bottom: 40, left: 40 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
@@ -80,6 +93,7 @@ export function VolcanoPlot({ data }: { data: VolcanoPoint[] }) {
         </Scatter>
       </ScatterChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -169,9 +183,17 @@ interface PCAPoint {
 }
 
 const GROUP_COLORS: Record<string, string> = {
+  "Normal HSC": "#0d9488",
+  "FLT3-ITD": "#ef4444",
+  "NPM1-mut": "#8b5cf6",
+  "Complex karyotype": "#f59e0b",
+  Control: "#0d9488",
+  AML: "#ef4444",
+  ALL: "#3b82f6",
+  Remission: "#0d9488",
+  Relapse: "#ef4444",
   Fertile: "#0d9488",
   Infertile: "#ef4444",
-  Control: "#0d9488",
   OAT: "#f59e0b",
   iNOA: "#8b5cf6",
 };

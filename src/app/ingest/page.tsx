@@ -2,6 +2,11 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/Badge";
 import { getSupabaseSchema } from "@/lib/supabase/client";
 import { getIngestManifest, getLibrary } from "@/lib/data/library";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Data Ingestion", PAGE_DESCRIPTIONS.ingest, {
+  path: "/ingest",
+});
 
 export const dynamic = "force-dynamic";
 

@@ -3,6 +3,11 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { DatasetFilters } from "@/components/datasets/DatasetFilters";
 import { DatasetsTable, PageNav } from "@/components/datasets/DatasetsTable";
 import { getDatasetsPage } from "@/lib/data/library";
+import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
+
+export const metadata = pageMetadata("Datasets", PAGE_DESCRIPTIONS.datasets, {
+  path: "/datasets",
+});
 
 export const dynamic = "force-dynamic";
 
