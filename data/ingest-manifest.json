@@ -5,10 +5,10 @@
     "geo": 165,
     "pride": 2,
     "pubmed": 310,
-    "microbiota": 21,
+    "microbiota": 22,
     "resources": 12,
-    "total_datasets": 200,
-    "total_publications": 318
+    "total_datasets": 201,
+    "total_publications": 319
   },
   "errors": [],
   "schedule": "0 3 * * 0"

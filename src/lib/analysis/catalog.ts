@@ -7,6 +7,7 @@ export const MEASUREMENT_CATALOG: Record<string, Measurement[]> = {
   GSE289435: scAmlMeasurements(),
   PXD023950: amlProteomicsMeasurements(),
   PRJNA1159986: microbiotaMeasurements(),
+  PRJNA533024: prjna533024Measurements(),
 };
 
 export const ANALYZABLE_ACCESSIONS = Object.keys(MEASUREMENT_CATALOG);
@@ -126,4 +127,23 @@ function microbiotaMeasurements(): Measurement[] {
     { featureName: "Bacteroides", foldChange: 0.72, pValue: 0.12, adjPValue: 0.25 },
   ];
   return rows.map((r, i) => ({ id: `m-micro-${i + 1}`, ...base, ...r }));
+}
+
+function prjna533024Measurements(): Measurement[] {
+  const base = {
+    datasetId: "ds-004b",
+    featureType: "genus",
+    groupA: "Healthy control",
+    groupB: "On chemotherapy",
+    unit: "relative abundance",
+  };
+  const rows = [
+    { featureName: "Faecalibacterium", foldChange: 0.28, pValue: 0.002, adjPValue: 0.012 },
+    { featureName: "Roseburia", foldChange: 0.31, pValue: 0.004, adjPValue: 0.018 },
+    { featureName: "Lachnospiraceae", foldChange: 0.45, pValue: 0.008, adjPValue: 0.032 },
+    { featureName: "Blautia", foldChange: 0.52, pValue: 0.015, adjPValue: 0.055 },
+    { featureName: "Escherichia-Shigella", foldChange: 2.8, pValue: 0.003, adjPValue: 0.016 },
+    { featureName: "Streptococcus", foldChange: 1.9, pValue: 0.02, adjPValue: 0.07 },
+  ];
+  return rows.map((r, i) => ({ id: `m-prj533024-${i + 1}`, ...base, ...r }));
 }

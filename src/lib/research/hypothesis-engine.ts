@@ -242,7 +242,7 @@ function buildFfarYear1FigurePlan(): FigurePlan[] {
       title: "Butyrate-producer depletion on treatment",
       description:
         "Faecalibacterium/Roseburia/Lachnospiraceae trajectory in PRJNA533024 longitudinal ALL 16S. Script: scripts/year1-prelim/05-microbiome-depletion.sh",
-      suggestedDataset: "PRJNA1159986",
+      suggestedDataset: "PRJNA533024",
     },
     {
       panel: "Table 1",

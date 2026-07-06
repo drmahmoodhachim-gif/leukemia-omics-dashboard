@@ -50,7 +50,8 @@ Config file: `scripts/year1-prelim/config/genes-and-signatures.json`
 4. **QIIME2/DADA2:** `05-microbiome-depletion.sh` (PRJNA533024)  
 5. **Integration (budgeted):** mixOmics/DIABIO — cross-block FFAR + methylation + immune + microbiome **signatures** (not same-patient merge)
 
-Starter scripts: `scripts/year1-prelim/README.md`
+Starter scripts: `scripts/year1-prelim/README.md`  
+Figure legends (proposal-ready): [`docs/FIGURE_LEGENDS_PRELIMINARY.md`](FIGURE_LEGENDS_PRELIMINARY.md)
 
 ---
 

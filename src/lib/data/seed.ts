@@ -56,6 +56,19 @@ export const publications: Publication[] = [
     url: "https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2025.1559033/full",
   },
   {
+    id: "pub-009",
+    doi: "10.1186/s12885-020-6654-5",
+    title:
+      "Temporal gut microbiota changes in pediatric ALL across chemotherapy",
+    authors: "Chua et al.",
+    journal: "BMC Cancer",
+    year: 2020,
+    abstract:
+      "Longitudinal 16S study in pediatric ALL: microbiota sampled before, during, and after chemotherapy vs matched controls (PRJNA533024). Foundation for butyrate-producer depletion analysis.",
+    keywords: ["microbiota", "ALL", "pediatric", "chemotherapy", "PRJNA533024", "16S"],
+    url: "https://doi.org/10.1186/s12885-020-6654-5",
+  },
+  {
     id: "pub-005",
     title: "Beat AML: ex vivo drug sensitivity in primary AML",
     authors: "Tyner JW, et al.",
@@ -158,6 +171,20 @@ export const datasets: Dataset[] = [
     platform: "16S + metagenomics",
     phenotype: "Newly diagnosed AML",
     url: "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1159986",
+  },
+  {
+    id: "ds-004b",
+    publicationId: "pub-009",
+    accession: "PRJNA533024",
+    repository: "SRA",
+    title: "Longitudinal pediatric ALL gut microbiota (pre/during/post chemo)",
+    omicsType: "microbiota",
+    species: "human",
+    tissue: "gut",
+    sampleCount: 7,
+    platform: "16S rRNA sequencing",
+    phenotype: "Longitudinal ALL treatment vs healthy control",
+    url: "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA533024",
   },
   {
     id: "ds-005",

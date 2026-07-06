@@ -1,6 +1,7 @@
 # Year 1 in silico preliminary analyses
 
-Proposal text: [`docs/INSILICO_PRELIMINARY_STUDIES.md`](../../docs/INSILICO_PRELIMINARY_STUDIES.md)
+Proposal text: [`docs/INSILICO_PRELIMINARY_STUDIES.md`](../../docs/INSILICO_PRELIMINARY_STUDIES.md)  
+Figure legends (Word/LaTeX): [`docs/FIGURE_LEGENDS_PRELIMINARY.md`](../../docs/FIGURE_LEGENDS_PRELIMINARY.md)
 
 Gene/signature lists: [`config/genes-and-signatures.json`](config/genes-and-signatures.json)  
 Dataset table: [`config/datasets.json`](config/datasets.json)

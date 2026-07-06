@@ -4,6 +4,22 @@ import { esearch, esummary } from "./ncbi-client";
 /** Curated gut/oral microbiota studies linked to leukemia treatment or diagnosis. */
 const CURATED: Omit<IngestRecord, "source" | "ingestedAt">[] = [
   {
+    accession: "PRJNA533024",
+    repository: "SRA",
+    title:
+      "Longitudinal pediatric ALL gut microbiota before, during, and after chemotherapy",
+    summary:
+      "16S rRNA profiling in children with ALL sampled at diagnosis, during chemotherapy, and post-cessation vs age/ethnicity-matched controls. Year-1 butyrate-producer depletion analysis (Faecalibacterium, Roseburia). BMC Cancer 2020.",
+    omicsType: "microbiota",
+    species: "human",
+    tissue: "gut",
+    sampleCount: 7,
+    platform: "16S rRNA sequencing",
+    phenotype: "Longitudinal ALL treatment vs healthy control",
+    url: "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA533024",
+    doi: "10.1186/s12885-020-6654-5",
+  },
+  {
     accession: "PRJNA914091",
     repository: "SRA",
     title: "Intestinal microbiota in acute leukemia survivors after intensive chemotherapy",
