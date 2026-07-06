@@ -27,6 +27,20 @@ export function HeatmapChart({
   const lookup = new Map(cells.map((c) => [`${c.gene}|${c.sample}`, c.value]));
   const range = max - min || 1;
 
+  if (!genes.length || !samples.length) {
+    return (
+      <div
+        role="img"
+        aria-label="Heatmap — no expression data available"
+        className="flex h-[280px] items-center justify-center rounded-lg bg-muted/40 text-sm text-muted-foreground"
+      >
+        No heatmap data available for this figure.
+      </div>
+    );
+  }
+
+  const label = `Gene expression heatmap with ${genes.length} genes across ${samples.length} samples`;
+
   function color(v: number): string {
     const t = (v - min) / range;
     if (t < 0.5) {
@@ -38,7 +52,7 @@ export function HeatmapChart({
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div role="img" aria-label={label} className="overflow-x-auto">
       <div
         className="inline-grid gap-px bg-border"
         style={{

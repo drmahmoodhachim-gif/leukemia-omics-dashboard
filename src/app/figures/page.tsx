@@ -1,4 +1,5 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { getHydratedFigures } from "@/lib/data/hydrate-figures";
 import { FiguresGallery } from "./FiguresGallery";
 import { FiguresHashScroll } from "./FiguresHashScroll";
 import { pageMetadata, PAGE_DESCRIPTIONS } from "@/lib/metadata";
@@ -10,6 +11,8 @@ export const metadata = pageMetadata(
 );
 
 export default function FiguresPage() {
+  const galleryFigures = getHydratedFigures();
+
   return (
     <DashboardLayout activePath="/figures">
       <FiguresHashScroll />
@@ -21,7 +24,7 @@ export default function FiguresPage() {
             manuscripts.
           </p>
         </header>
-        <FiguresGallery />
+        <FiguresGallery figures={galleryFigures} />
       </div>
     </DashboardLayout>
   );

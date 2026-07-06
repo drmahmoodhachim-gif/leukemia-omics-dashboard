@@ -580,7 +580,8 @@ export function AnalysisWorkspace({
                                 )}
                                 {m.foldChange != null && (
                                   <span className="text-xs text-muted-foreground">
-                                    FC {m.foldChange.toFixed(2)}
+                                    log₂FC{" "}
+                                    {Math.log2(Math.max(m.foldChange, 0.01)).toFixed(2)}
                                   </span>
                                 )}
                               </button>

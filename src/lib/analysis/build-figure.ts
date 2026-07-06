@@ -36,16 +36,20 @@ export function measurementsToBar(measurements: Measurement[]) {
 export function measurementsToTable(measurements: Measurement[]) {
   const hasStats = measurements.some((m) => m.pValue != null);
   const columns = hasStats
-    ? ["Feature", "Group A", "Group B", "Fold change", "p-value", "Unit"]
+    ? ["Feature", "Group A", "Group B", "log₂ FC", "p-value", "Unit"]
     : ["Parameter", "Reference", "Threshold", "Unit"];
 
   const rows = measurements.map((m) => {
     if (hasStats) {
+      const log2Fc =
+        m.foldChange != null && m.foldChange > 0
+          ? Math.log2(Math.max(m.foldChange, 0.01)).toFixed(2)
+          : "—";
       return [
         m.featureName,
         m.valueA?.toString() ?? "—",
         m.valueB?.toString() ?? "—",
-        m.foldChange?.toFixed(2) ?? "—",
+        log2Fc,
         m.pValue != null ? m.pValue.toExponential(1) : "—",
         m.unit ?? "—",
       ];

@@ -3,16 +3,15 @@
 import { FigureRenderer } from "@/components/figures/FigureRenderer";
 import { FigureExport } from "@/components/figures/FigureExport";
 import { Badge } from "@/components/ui/Badge";
-import { getHydratedFigures } from "@/lib/data/hydrate-figures";
 import {
   getDatasetById,
   getMethodById,
   getPublicationById,
 } from "@/lib/data/seed";
+import type { Figure } from "@/lib/types";
 import { FIGURE_LABELS } from "@/lib/utils";
 
-export function FiguresGallery() {
-  const galleryFigures = getHydratedFigures();
+export function FiguresGallery({ figures: galleryFigures }: { figures: Figure[] }) {
 
   return (
     <div className="space-y-8">
@@ -70,7 +69,7 @@ export function FiguresGallery() {
                 )}
               </div>
             </div>
-            <div id={`figure-content-${fig.id}`} className="p-6">
+            <div id={`figure-content-${fig.id}`} className="min-h-[320px] p-6">
               <FigureRenderer figure={fig} />
             </div>
             {method && (

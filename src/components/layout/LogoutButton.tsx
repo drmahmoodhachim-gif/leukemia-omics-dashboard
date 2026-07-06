@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
+import { fetchWithRetry } from "@/lib/api/fetch-json";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export function LogoutButton() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/api/auth/me")
+    fetchWithRetry("/api/auth/me", undefined, { retries: 2, baseDelayMs: 300 })
       .then((r) => r.json())
       .then((data) => {
         if (data.authRequired && data.authenticated) {

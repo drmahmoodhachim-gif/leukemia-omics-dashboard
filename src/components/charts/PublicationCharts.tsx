@@ -103,8 +103,23 @@ interface BarCategory {
 }
 
 export function OmicsBarChart({ data }: { data: BarCategory[] }) {
+  if (!data.length) {
+    return (
+      <div
+        role="img"
+        aria-label="Bar chart — no data available"
+        className="flex h-[320px] items-center justify-center rounded-lg bg-muted/40 text-sm text-muted-foreground"
+      >
+        No bar chart data available.
+      </div>
+    );
+  }
+
+  const label = `Bar chart comparing ${data.length} categories`;
+
   return (
-    <ResponsiveContainer width="100%" height={320}>
+    <div role="img" aria-label={label}>
+      <ResponsiveContainer width="100%" height={320}>
       <BarChart data={data} margin={{ top: 10, right: 20, bottom: 60, left: 10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
@@ -125,6 +140,7 @@ export function OmicsBarChart({ data }: { data: BarCategory[] }) {
         <Bar dataKey="count" fill={COLORS.primary} radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -199,8 +215,25 @@ const GROUP_COLORS: Record<string, string> = {
 };
 
 export function PCAPlot({ data, variance }: { data: PCAPoint[]; variance?: { pc1: number; pc2: number } }) {
+  if (!data.length) {
+    return (
+      <div
+        role="img"
+        aria-label="PCA plot — no data available"
+        className="flex h-[400px] items-center justify-center rounded-lg bg-muted/40 text-sm text-muted-foreground"
+      >
+        No PCA plot data available.
+      </div>
+    );
+  }
+
+  const pc1Label = variance ? `PC1 (${variance.pc1}% variance)` : "PC1";
+  const pc2Label = variance ? `PC2 (${variance.pc2}% variance)` : "PC2";
+  const label = `PCA scatter plot of ${data.length} samples on ${pc1Label} and ${pc2Label}`;
+
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <div role="img" aria-label={label}>
+      <ResponsiveContainer width="100%" height={400}>
       <ScatterChart margin={{ top: 20, right: 30, bottom: 40, left: 40 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
@@ -242,6 +275,7 @@ export function PCAPlot({ data, variance }: { data: PCAPoint[]; variance?: { pc1
         </Scatter>
       </ScatterChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 

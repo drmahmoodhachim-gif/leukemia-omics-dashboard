@@ -4,10 +4,12 @@ import type { ResearchTemplateId } from "@/lib/research/types";
 import { RESEARCH_TEMPLATES } from "@/lib/research/templates";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 26;
 
 const VALID_IDS = new Set(RESEARCH_TEMPLATES.map((t) => t.id));
 
 export async function POST(request: Request) {
+  const started = Date.now();
   try {
     const body = (await request.json()) as { question?: string; templateId?: string };
     const question = body.question?.trim() ?? "";
@@ -25,9 +27,10 @@ export async function POST(request: Request) {
     }
 
     const plan = await generateResearchPlan({ question, templateId });
+    console.info(`[research/plan] ok ${Date.now() - started}ms template=${templateId}`);
     return NextResponse.json(plan);
   } catch (err) {
-    console.error("[research/plan]", err);
+    console.error("[research/plan]", err, `${Date.now() - started}ms`);
     return NextResponse.json({ error: "Failed to generate research plan." }, { status: 500 });
   }
 }

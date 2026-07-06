@@ -29,6 +29,7 @@ import {
 import { RESEARCH_TEMPLATES } from "@/lib/research/templates";
 import type { ResearchPlan, ResearchTemplateId } from "@/lib/research/types";
 import { OMICS_LABELS, TISSUE_LABELS } from "@/lib/utils";
+import { fetchJsonWithRetry, friendlyFetchError } from "@/lib/api/fetch-json";
 
 const EXAMPLE_QUESTIONS = [
   "Do AML blasts show distinct single-cell differentiation states compared to normal HSCs?",
@@ -51,16 +52,19 @@ export function ResearchExplorer() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/research/plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, templateId }),
-      });
-      const data = await res.json();
+      const { res, data } = await fetchJsonWithRetry<{ error?: string } & ResearchPlan>(
+        "/api/research/plan",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, templateId }),
+        },
+        { retries: 3, baseDelayMs: 500 }
+      );
       if (!res.ok) throw new Error(data.error ?? "Generation failed");
       setPlan(data as ResearchPlan);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
+      setError(friendlyFetchError(e, "Failed to generate research plan"));
       setPlan(null);
     } finally {
       setLoading(false);
@@ -181,9 +185,17 @@ export function ResearchExplorer() {
             </button>
 
             {error && (
-              <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
-                {error}
-              </p>
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+                <p>{error}</p>
+                <button
+                  type="button"
+                  onClick={generate}
+                  disabled={loading || question.trim().length < 10}
+                  className="mt-2 text-xs font-medium text-primary hover:underline disabled:opacity-50"
+                >
+                  Retry generation
+                </button>
+              </div>
             )}
           </div>
         </div>

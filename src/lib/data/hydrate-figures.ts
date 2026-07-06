@@ -31,9 +31,24 @@ function beatAmlHeatmapData() {
   return { genes, samples, cells, min: 0.5, max: 2.5 };
 }
 
+function hasFigureChartData(data: Figure["data"]): boolean {
+  if (!data || typeof data !== "object") return false;
+  const points = data.points;
+  if (Array.isArray(points) && points.length > 0) return true;
+  const genes = data.genes;
+  if (Array.isArray(genes) && genes.length > 0) return true;
+  const categories = data.categories;
+  if (Array.isArray(categories) && categories.length > 0) return true;
+  const columns = data.columns;
+  if (Array.isArray(columns) && columns.length > 0) return true;
+  const pathways = data.pathways;
+  if (Array.isArray(pathways) && pathways.length > 0) return true;
+  return false;
+}
+
 /** Ensure gallery figures have renderable chart data (seed entries may omit `data`). */
 export function hydrateFigure(figure: Figure): Figure {
-  if (figure.data && Object.keys(figure.data).length > 0) return figure;
+  if (hasFigureChartData(figure.data)) return figure;
 
   switch (figure.id) {
     case "fig-001": {
