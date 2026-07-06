@@ -71,6 +71,22 @@ export const RESEARCH_TEMPLATES: ResearchTemplate[] = [
     defaultFigures: ["bar", "table", "volcano", "scatter"],
     methodCategories: ["Clinical Assays", "Transcriptomics", "Single-cell Analysis"],
   },
+  {
+    id: "ffar_in_silico_year1",
+    label: "FFAR / butyrate in silico Year-1 (public data)",
+    description:
+      "De-risk FFAR–butyrate–immunogenicity aims using TARGET, Beat AML, scRNA, LINCS/DepMap, and pediatric microbiome cohorts before UAE primary sampling.",
+    hypothesisStem:
+      "We hypothesize that {focus} FFAR-axis and butyrate-responsive programs are epigenetically silenced in cold, relapse-prone pediatric leukemias, with concordant gut butyrate-producer depletion on treatment — testable in public COG/TARGET data before same-patient UAE linkage.",
+    defaultFigures: ["bar", "scatter", "heatmap", "table"],
+    methodCategories: [
+      "Transcriptomics",
+      "Epigenomics",
+      "Single-cell Analysis",
+      "Microbiota",
+      "Functional Analysis",
+    ],
+  },
 ];
 
 export function getTemplate(id: string) {

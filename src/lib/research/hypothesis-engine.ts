@@ -24,7 +24,8 @@ const DOMAIN_TERMS: Record<string, string[]> = {
   transcriptomics: ["rna", "mrna", "transcript", "transcriptome", "rnaseq", "expression", "gse"],
   epigenomics: ["methylation", "epigenetic", "epigenomics", "450k", "epic", "dna"],
   single_cell: ["single", "cell", "scrna", "scrnaseq", "cluster", "blast", "hsc"],
-  microbiota: ["microbiota", "microbiome", "gut", "16s", "metagenom", "scfa", "fecal", "intestinal"],
+  microbiota: ["microbiota", "microbiome", "gut", "16s", "metagenom", "scfa", "fecal", "intestinal", "butyrate", "faecalibacterium"],
+  ffar: ["ffar", "ffar2", "ffar3", "gpr39", "hcar2", "butyrate", "scfa", "hdac", "immunogenic", "cold", "hot"],
   leukemia: ["aml", "all", "cll", "leukemia", "myeloid", "lymphoblastic", "mrd", "relapse", "remission"],
   genomics: ["wes", "wgs", "mutation", "flt3", "npm1", "target", "tcga", "genomic"],
 };
@@ -96,7 +97,7 @@ function inferFocus(tokens: string[], question: string): string {
   if (/protein|proteom|pxd/i.test(joined + question)) return "leukemia proteome";
   if (/methyl|epigen/i.test(joined + question)) return "leukemia epigenome";
   if (/single.?cell|scrna|blast|hsc/i.test(joined + question)) return "leukemia cell states";
-  if (/mrd|minimal residual|relapse/i.test(joined + question)) return "MRD molecular signatures";
+  if (/ffar|butyrate|scfa|gpr39|hcar2/i.test(joined + question)) return "FFAR/butyrate axis";
   if (/rna|transcript|gse/i.test(joined + question)) return "leukemia transcriptome";
   return "leukemia molecular profiles";
 }
@@ -133,18 +134,35 @@ function buildHypothesis(
     .replace("{control}", control)
     .replace("{tissue}", tissue);
 
-  const aims = [
-    `Curate and harmonize public datasets addressing: “${question.trim()}”.`,
-    `Quantify differential features (${focus}) between ${caseLabel} and ${control}.`,
-    `Interpret results with pathway and hematopoiesis/leukemia-focused functional analysis.`,
-    `Draft publication-ready figures and propose experimental validation.`,
-  ];
+  const aims =
+    templateId === "ffar_in_silico_year1"
+      ? [
+          "Analysis 1: FFAR2/3/4/HCAR2/GPR39 expression and EFS/OS in TARGET-AML/ALL (cBioPortal/Xena); Beat AML replication.",
+          "Analysis 2: Promoter methylation vs expression for GPR39, IRF4, CCNA1, LAMA4 in TARGET-AML 450K data (minfi).",
+          "Analysis 3: scRNA immunogenicity (GSE289435) — FFAR/AP genes across blast, T, myeloid; CIBERSORTx on bulk TARGET.",
+          "Analysis 4: LINCS butyrate/HDACi signature projected onto TARGET; DepMap FFAR + HDAC dependency in NALM-6/MV4-11.",
+          "Analysis 5: PRJNA533024 longitudinal 16S — butyrate-producer trajectories (QIIME2); UAE cohort for same-patient linkage.",
+        ]
+      : [
+          `Curate and harmonize public datasets addressing: “${question.trim()}”.`,
+          `Quantify differential features (${focus}) between ${caseLabel} and ${control}.`,
+          `Interpret results with pathway and hematopoiesis/leukemia-focused functional analysis.`,
+          `Draft publication-ready figures and propose experimental validation.`,
+        ];
 
-  const predictions = [
-    `At least one public dataset in the library will show significant separation on PCA/volcano plots.`,
-    `Top features will map to known leukemia genes (e.g., RUNX1, FLT3, HOXA9, NPM1) or microbiota markers when relevant.`,
-    `Pathway enrichment will highlight hematopoietic differentiation, MYC signaling, or ribosome biogenesis when ${focus} is involved.`,
-  ];
+  const predictions =
+    templateId === "ffar_in_silico_year1"
+      ? [
+          "FFAR-family somatic mutation frequency will be negligible in TARGET (epigenetic control premise).",
+          "GPR39/IRF4/CCNA1/LAMA4 promoter methylation will anti-correlate with expression in independent TARGET-AML.",
+          "Relapse-associated marrows will show lower immunogenicity scores (MHC-II down, exhaustion up) and lower FFAR-program activity.",
+          "Butyrate-producer abundance will decline during chemotherapy in PRJNA533024, aligning with infection-risk windows.",
+        ]
+      : [
+          `At least one public dataset in the library will show significant separation on PCA/volcano plots.`,
+          `Top features will map to known leukemia genes (e.g., RUNX1, FLT3, HOXA9, NPM1) or microbiota markers when relevant.`,
+          `Pathway enrichment will highlight hematopoietic differentiation, MYC signaling, or ribosome biogenesis when ${focus} is involved.`,
+        ];
 
   return { hypothesis, aims, predictions };
 }
@@ -184,10 +202,64 @@ function buildMaterialsAndMethods(
   ].join("\n\n");
 }
 
+function buildFfarYear1FigurePlan(): FigurePlan[] {
+  return [
+    {
+      panel: "Prelim Fig. 1",
+      figureType: "bar",
+      title: "FFAR expression atlas + Kaplan–Meier survival",
+      description:
+        "TARGET-AML/ALL: FFAR2/3/4/HCAR2/GPR39 by subtype; EFS/OS by high/low expression; mutation frequency table. Portal: cBioPortal, Xena. Script: scripts/year1-prelim/01-ffar-portal-guide.md",
+      suggestedDataset: "TARGET-AML",
+    },
+    {
+      panel: "Prelim Fig. 2",
+      figureType: "scatter",
+      title: "Methylation silencing at candidate loci",
+      description:
+        "Promoter 450K β vs RNA for GPR39, IRF4, CCNA1, LAMA4 (TARGET-AML). Script: scripts/year1-prelim/02-methylation-silencing.R",
+      suggestedDataset: "TARGET-AML",
+    },
+    {
+      panel: "Prelim Fig. 3",
+      figureType: "heatmap",
+      title: "Cold-to-hot scRNA immunogenicity",
+      description:
+        "Dot plot FFAR/AP/exhaustion genes by compartment; immunogenicity score diagnosis vs relapse (GSE289435). Script: scripts/year1-prelim/03-scrna-immunogenicity.R",
+      suggestedDataset: "GSE289435",
+    },
+    {
+      panel: "Prelim Fig. 4",
+      figureType: "scatter",
+      title: "Butyrate signature + DepMap line selection",
+      description:
+        "LINCS butyrate score on TARGET tumors; DepMap FFAR + HDAC1/2/3 in NALM-6/MV4-11. Script: scripts/year1-prelim/04-butyrate-depmap.R",
+      suggestedDataset: "BEAT-AML",
+    },
+    {
+      panel: "Prelim Fig. 5",
+      figureType: "bar",
+      title: "Butyrate-producer depletion on treatment",
+      description:
+        "Faecalibacterium/Roseburia/Lachnospiraceae trajectory in PRJNA533024 longitudinal ALL 16S. Script: scripts/year1-prelim/05-microbiome-depletion.sh",
+      suggestedDataset: "PRJNA1159986",
+    },
+    {
+      panel: "Table 1",
+      figureType: "table",
+      title: "In silico dataset map",
+      description:
+        "See docs/INSILICO_PRELIMINARY_STUDIES.md — accession, modality, aim de-risked, access route for all five analyses.",
+    },
+  ];
+}
+
 function buildFigurePlan(
   templateId: ResearchTemplateId,
   datasets: ScoredDataset[]
 ): FigurePlan[] {
+  if (templateId === "ffar_in_silico_year1") return buildFfarYear1FigurePlan();
+
   const template = getTemplate(templateId);
   const primary = datasets[0];
 
@@ -377,6 +449,14 @@ export async function generateResearchPlan(opts: {
   const validations = buildValidations(templateId, fallbackDs, question);
 
   const analysisLinks = [
+    ...(templateId === "ffar_in_silico_year1"
+      ? [
+          {
+            label: "Year-1 in silico plan (proposal doc)",
+            href: "https://github.com/drmahmoodhachim-gif/leukemia-omics-dashboard/blob/master/docs/INSILICO_PRELIMINARY_STUDIES.md",
+          },
+        ]
+      : []),
     ...fallbackDs.slice(0, 3).map((d) => ({
       label: `Analyze ${d.accession}`,
       href: d.analysisUrl,

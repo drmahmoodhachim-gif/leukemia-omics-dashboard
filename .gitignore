@@ -34,6 +34,9 @@ yarn-error.log*
 !data/library-merged.json
 !data/ingest-manifest.json
 
+# Year-1 in silico downloads (local only)
+/data/year1-prelim/
+
 # env files
 .env*.local
 .env

@@ -7,7 +7,8 @@ export type ResearchTemplateId =
   | "cross_omics"
   | "clinical_association"
   | "microbiota_leukemia"
-  | "mrd_monitoring";
+  | "mrd_monitoring"
+  | "ffar_in_silico_year1";
 
 export interface ResearchTemplate {
   id: ResearchTemplateId;

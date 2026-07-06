@@ -1,0 +1,26 @@
+{
+  "ffar_receptors": ["FFAR2", "FFAR3", "FFAR4", "HCAR2", "GPR109A", "GPR39"],
+  "methylation_candidates": ["GPR39", "IRF4", "CCNA1", "LAMA4"],
+  "immunogenicity": {
+    "antigen_presentation": ["HLA-DRA", "HLA-DRB1", "HLA-DPA1", "HLA-DPB1", "CIITA", "CD74"],
+    "exhaustion": ["PDCD1", "LAG3", "HAVCR2", "TIGIT", "TOX", "ENTPD1"]
+  },
+  "butyrate_producers_16s": {
+    "genera": ["Faecalibacterium", "Roseburia", "Eubacterium", "Coprococcus"],
+    "families": ["Lachnospiraceae", "Ruminococcaceae"]
+  },
+  "wet_lab_lines": {
+    "ALL": ["NALM-6", "REH", "RS4;11"],
+    "AML": ["MV4-11", "HL-60", "OCI-AML3"]
+  },
+  "hdac_targets": ["HDAC1", "HDAC2", "HDAC3"],
+  "lincs_perturbagens": [
+    "butyrate",
+    "sodium butyrate",
+    "vorinostat",
+    "entinostat",
+    "valproic acid"
+  ],
+  "cibersortx_reference": "LM22",
+  "immunogenicity_signature_formula": "mean(z(HLA-DRA), z(HLA-DRB1), z(CIITA), z(CD74)) - mean(z(PDCD1), z(LAG3), z(HAVCR2))"
+}

@@ -1,0 +1,106 @@
+{
+  "analyses": [
+    {
+      "id": "A1",
+      "title": "FFAR expression atlas + prognostic value",
+      "aim": "Aim 1",
+      "datasets": [
+        {
+          "name": "TARGET-AML",
+          "accession": "TARGET-AML",
+          "modality": "RNA-seq, WES, 450K, clinical",
+          "n_approx": 1000,
+          "access": "https://portal.gdc.cancer.gov/projects/TARGET-AML",
+          "portal_fast": "https://www.cbioportal.org/study/summary?id=aml_target_2018"
+        },
+        {
+          "name": "TARGET-ALL",
+          "accession": "TARGET-ALL",
+          "modality": "RNA-seq, clinical",
+          "access": "https://portal.gdc.cancer.gov/projects/TARGET-ALL"
+        },
+        {
+          "name": "Beat AML",
+          "accession": "BEAT-AML",
+          "modality": "RNA-seq, ex vivo drug response",
+          "access": "https://vizome.org"
+        }
+      ],
+      "figure": "FFAR panel by subtype + Kaplan-Meier EFS/OS; mutation frequency"
+    },
+    {
+      "id": "A2",
+      "title": "Methylation silencing validation",
+      "aim": "Aim 2",
+      "datasets": [
+        {
+          "name": "TARGET-AML methylation",
+          "accession": "TARGET-AML",
+          "modality": "Illumina 450K + matched RNA-seq",
+          "access": "GDC data category: DNA Methylation"
+        }
+      ],
+      "figure": "Promoter methylation vs expression anti-correlation plot"
+    },
+    {
+      "id": "A3",
+      "title": "Cold-to-hot / dual-compartment immunogenicity",
+      "aim": "Novel angle",
+      "datasets": [
+        {
+          "name": "Pediatric AML scRNA atlas",
+          "accession": "GSE289435",
+          "modality": "scRNA-seq",
+          "access": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE289435"
+        },
+        {
+          "name": "TARGET-AML bulk",
+          "accession": "TARGET-AML",
+          "modality": "RNA-seq + CIBERSORTx deconvolution",
+          "access": "https://cibersortx.stanford.edu"
+        }
+      ],
+      "figure": "Compartment dot plot + immunogenicity score vs relapse status"
+    },
+    {
+      "id": "A4",
+      "title": "Butyrate/HDACi signature + DepMap line selection",
+      "aim": "Aim 2/3",
+      "datasets": [
+        {
+          "name": "LINCS L1000",
+          "accession": "LINCS",
+          "modality": "Perturbation signatures",
+          "access": "https://clue.io"
+        },
+        {
+          "name": "DepMap",
+          "accession": "DepMap-AML",
+          "modality": "CRISPR dependency + expression",
+          "access": "https://depmap.org"
+        }
+      ],
+      "figure": "Signature projection on TARGET; DepMap FFAR + HDAC heatmap"
+    },
+    {
+      "id": "A5",
+      "title": "Butyrate-producer depletion across treatment",
+      "aim": "Microbiome arm",
+      "datasets": [
+        {
+          "name": "Longitudinal pediatric ALL 16S",
+          "accession": "PRJNA533024",
+          "modality": "16S, longitudinal pre/during/post chemo",
+          "access": "https://www.ncbi.nlm.nih.gov/bioproject/533024"
+        },
+        {
+          "name": "Pediatric reference baseline",
+          "accession": "curatedMetagenomicData",
+          "modality": "Shotgun metagenomics",
+          "access": "Bioconductor curatedMetagenomicData"
+        }
+      ],
+      "figure": "Butyrate-producer abundance trajectory + infection episodes"
+    }
+  ]
+}
